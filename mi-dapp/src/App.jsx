@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import AuditRegistryABI from './AuditRegistryABI.json';
+import './App.css';
 
 const contractAddress = "AQUI INSTERTAMOS LA DIRECCIÓN DEL CONTRATO";
 
@@ -10,6 +11,7 @@ export default function App() {
     const [isReadOnly, setIsReadOnly] = useState(true);
     const [reports, setReports] = useState([]);
 
+    // 1. Inicia preguntando si se quiere conectar a la Blockchain
     useEffect(() => {
         checkIfWalletIsConnected();
     }, []);
@@ -53,6 +55,7 @@ export default function App() {
         }
     };
 
+    // 3. Botón/Menú para conectar y desconectar la wallet
     const connectWallet = async () => {
         checkIfWalletIsConnected();
     };
@@ -62,6 +65,7 @@ export default function App() {
         setIsReadOnly(true);
     };
 
+    // 4. Interacción con el Smart Contract (Escritura / Pago)
     const requestAudit = async (systemName) => {
         if (isReadOnly) return alert("Debes conectar tu wallet para esta acción.");
 
@@ -81,273 +85,113 @@ export default function App() {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            backgroundColor: '#f3f6fb',
-            fontFamily: 'Arial, sans-serif',
-            color: '#263445',
-            padding: '30px 20px'
-        }}>
-            <div style={{
-                maxWidth: '1000px',
-                margin: '0 auto'
-            }}>
+        <main className="app-container">
+            <div className="app-content">
 
-                <header style={{
-                    backgroundColor: '#ffffff',
-                    padding: '25px 30px',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    flexWrap: 'wrap',
-                    gap: '15px',
-                    border: '1px solid #dce4ef',
-                    borderTop: '5px solid #2864a8'
-                }}>
-                    <div>
-                        <h1 style={{
-                            color: '#24558b',
-                            fontSize: '25px',
-                            margin: '0 0 8px 0'
-                        }}>
-                            Registro de Auditorías
-                        </h1>
-                        <p style={{
-                            color: '#68788b',
-                            margin: 0,
-                            fontSize: '14px'
-                        }}>
-                            Plataforma de Auditorías de Ciberseguridad
-                        </p>
+                <header className="app-header">
+                    <div className="header-title">
+                        <h1>Registro de Auditorías</h1>
+                        <p>Plataforma de Auditorías de Ciberseguridad</p>
                     </div>
 
-                    {account ? (
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            flexWrap: 'wrap'
-                        }}>
-                            <span style={{
-                                backgroundColor: '#e8f2ff',
-                                color: '#24558b',
-                                padding: '10px 14px',
-                                borderRadius: '6px',
-                                fontSize: '13px'
-                            }}>
-                                Conectado: {account.substring(0,6)}...{account.substring(38)}
-                            </span>
+                    <div className="wallet-container">
+                        {account ? (
+                            <>
+                                <span className="wallet-address">
+                                    Conectado: {account.substring(0,6)}...{account.substring(38)}
+                                </span>
+                                <button
+                                    className="button button-secondary"
+                                    onClick={disconnectWallet}
+                                >
+                                    Desconectar
+                                </button>
+                            </>
+                        ) : (
                             <button
-                                onClick={disconnectWallet}
-                                style={{
-                                    backgroundColor: '#e7ebf0',
-                                    color: '#35465a',
-                                    border: 'none',
-                                    padding: '11px 16px',
-                                    borderRadius: '6px',
-                                    cursor: 'pointer'
-                                }}
+                                className="button button-primary"
+                                onClick={connectWallet}
                             >
-                                Desconectar
+                                Conectar Wallet (MetaMask)
                             </button>
-                        </div>
-                    ) : (
-                        <button
-                            onClick={connectWallet}
-                            style={{
-                                backgroundColor: '#2864a8',
-                                color: '#ffffff',
-                                border: 'none',
-                                padding: '12px 18px',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            Conectar Wallet (MetaMask)
-                        </button>
-                    )}
+                        )}
+                    </div>
                 </header>
 
                 {isReadOnly && (
-                    <div style={{
-                        backgroundColor: '#fff4e5',
-                        border: '1px solid #f0d5a9',
-                        borderLeft: '5px solid #e5a13b',
-                        color: '#79551f',
-                        padding: '16px 20px',
-                        marginTop: '20px',
-                        borderRadius: '7px',
-                        fontSize: '14px',
-                        lineHeight: '1.5'
-                    }}>
+                    <div className="readonly-alert">
                         <strong>Modo de Solo Lectura</strong>
-                        <p style={{ margin: '6px 0 0 0' }}>
+                        <p>
                             Estás viendo el registro público de auditorías.
                             Conecta tu wallet para solicitar nuevas auditorías o registrar reportes.
                         </p>
                     </div>
                 )}
 
-                <section style={{
-                    backgroundColor: '#ffffff',
-                    padding: '25px',
-                    marginTop: '25px',
-                    borderRadius: '10px',
-                    border: '1px solid #dce4ef'
-                }}>
-                    <h2 style={{
-                        color: '#24558b',
-                        fontSize: '20px',
-                        marginTop: 0,
-                        marginBottom: '8px'
-                    }}>
-                        Sistemas Auditados
-                    </h2>
-
-                    <p style={{
-                        color: '#788797',
-                        fontSize: '13px',
-                        marginBottom: '20px'
-                    }}>
+                <section className="content-card">
+                    <h2>Sistemas Auditados</h2>
+                    <p className="section-description">
                         Registro público e inmutable almacenado en Blockchain.
                     </p>
 
                     {reports.length > 0 ? (
-                        <div style={{ overflowX: 'auto' }}>
-                            <table style={{
-                                width: '100%',
-                                borderCollapse: 'collapse',
-                                fontSize: '14px'
-                            }}>
+                        <div className="table-container">
+                            <table className="reports-table">
                                 <thead>
-                                    <tr style={{
-                                        backgroundColor: '#edf3fa',
-                                        color: '#345477',
-                                        textAlign: 'left'
-                                    }}>
-                                        <th style={{ padding: '13px' }}>Sistema</th>
-                                        <th style={{ padding: '13px' }}>Hash del Reporte</th>
+                                    <tr>
+                                        <th>Sistema</th>
+                                        <th>Hash del Reporte</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {reports.map((rep, index) => (
-                                        <tr key={index} style={{
-                                            borderBottom: '1px solid #e5eaf0'
-                                        }}>
-                                            <td style={{ padding: '14px 13px' }}>
-                                                {rep[0]}
-                                            </td>
-                                            <td style={{
-                                                padding: '14px 13px',
-                                                color: '#60758c',
-                                                wordBreak: 'break-all'
-                                            }}>
-                                                {rep[1]}
-                                            </td>
+                                        <tr key={index}>
+                                            <td>{rep[0]}</td>
+                                            <td className="hash-cell">{rep[1]}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
                     ) : (
-                        <div style={{
-                            backgroundColor: '#f7f9fc',
-                            padding: '25px',
-                            textAlign: 'center',
-                            borderRadius: '7px',
-                            color: '#8794a3',
-                            fontSize: '14px'
-                        }}>
+                        <div className="empty-message">
                             No hay reportes registrados para mostrar.
                         </div>
                     )}
                 </section>
 
-                <section style={{
-                    backgroundColor: '#ffffff',
-                    padding: '25px',
-                    marginTop: '25px',
-                    borderRadius: '10px',
-                    border: '1px solid #dce4ef'
-                }}>
-                    <h2 style={{
-                        color: '#24558b',
-                        fontSize: '20px',
-                        marginTop: 0
-                    }}>
-                        Solicitar Auditoría Prioritaria
-                    </h2>
-
-                    <p style={{
-                        color: '#68788b',
-                        fontSize: '14px',
-                        lineHeight: '1.6'
-                    }}>
+                <section className="content-card">
+                    <h2>Solicitar Auditoría Prioritaria</h2>
+                    <p className="section-description">
                         Solicita una auditoría prioritaria para el sistema seleccionado.
                         La operación requiere conectar una wallet y confirmar el pago.
                     </p>
 
-                    <div style={{
-                        backgroundColor: '#f3f6fb',
-                        padding: '16px',
-                        borderRadius: '7px',
-                        marginBottom: '18px'
-                    }}>
-                        <span style={{
-                            color: '#68788b',
-                            fontSize: '13px'
-                        }}>
-                            Sistema seleccionado
-                        </span>
-                        <p style={{
-                            fontWeight: 'bold',
-                            margin: '7px 0 0 0',
-                            color: '#35465a'
-                        }}>
-                            Servidor Web GNS3
-                        </p>
+                    <div className="system-selection">
+                        <span>Sistema seleccionado</span>
+                        <strong>Servidor Web GNS3</strong>
                     </div>
 
                     <button
+                        className="button button-primary audit-button"
                         onClick={() => requestAudit("Servidor Web GNS3")}
                         disabled={isReadOnly}
-                        style={{
-                            backgroundColor: isReadOnly ? '#aeb9c6' : '#2864a8',
-                            color: '#ffffff',
-                            border: 'none',
-                            padding: '13px 20px',
-                            borderRadius: '6px',
-                            cursor: isReadOnly ? 'not-allowed' : 'pointer',
-                            fontWeight: 'bold',
-                            fontSize: '14px'
-                        }}
                     >
                         Pagar 0.01 ETH y Solicitar
                     </button>
 
                     {isReadOnly && (
-                        <p style={{
-                            color: '#8794a3',
-                            fontSize: '12px',
-                            marginTop: '12px',
-                            marginBottom: 0
-                        }}>
+                        <p className="disabled-message">
                             Conecta tu wallet para habilitar esta opción.
                         </p>
                     )}
                 </section>
 
-                <footer style={{
-                    textAlign: 'center',
-                    color: '#9aa6b3',
-                    fontSize: '12px',
-                    padding: '25px 0 10px 0'
-                }}>
+                <footer className="app-footer">
                     Registro de Auditorías de Ciberseguridad | DApp Blockchain
                 </footer>
+
             </div>
-        </div>
+        </main>
     );
 }
