@@ -1,16 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import AuditRegistryABI from './AuditRegistryABI.json';
+import AuditRegistryABI from './AuditRegistryABI.json'; // El ABI del contrato compilado
 import './App.css';
 
-const contractAddress = "AQUI INSTERTAMOS LA DIRECCIÓN DEL CONTRATO";
+const contractAddress = "0xC469e7aE4aD962c30c7111dc580B4adbc7E914DD";
 
 export default function App() {
     const [account, setAccount] = useState(null);
     const [isReadOnly, setIsReadOnly] = useState(true);
     const [reports, setReports] = useState([]);
-
+    
     // 1. Inicia preguntando si se quiere conectar a la Blockchain
     useEffect(() => {
         checkIfWalletIsConnected();
@@ -20,11 +19,12 @@ export default function App() {
         if (!window.ethereum) {
             console.log("Asegúrate de tener MetaMask instalado.");
             setIsReadOnly(true);
-            loadPublicData();
+            loadPublicData(); // 2. Mostrar funcionalidad en modo lectura
             return;
         }
-
+        
         try {
+            // Solicita al usuario conectarse al cargar
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             if (accounts.length > 0) {
                 setAccount(accounts[0]);
@@ -33,15 +33,17 @@ export default function App() {
             }
         } catch (error) {
             console.error("El usuario rechazó la conexión.");
+            // 2. En caso de rechazarlo mostrar funcionalidad sin permitir modificar
             setIsReadOnly(true);
             loadPublicData();
         }
     };
 
     const loadPublicData = async () => {
+        // Conexión de solo lectura usando un proveedor por defecto (sin necesidad de firma)
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const contract = new ethers.Contract(contractAddress, AuditRegistryABI, provider);
-
+        
         try {
             const count = await contract.reportCount();
             let loadedReports = [];
@@ -68,14 +70,14 @@ export default function App() {
     // 4. Interacción con el Smart Contract (Escritura / Pago)
     const requestAudit = async (systemName) => {
         if (isReadOnly) return alert("Debes conectar tu wallet para esta acción.");
-
+        
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+        const signer = provider.getSigner(); // Necesario para firmar transacciones
         const contract = new ethers.Contract(contractAddress, AuditRegistryABI, signer);
 
         try {
             const tx = await contract.requestPriorityAudit(systemName, {
-                value: ethers.utils.parseEther("0.01")
+                value: ethers.utils.parseEther("0.01") // 3. Pago en criptomonedas
             });
             await tx.wait();
             alert("Solicitud y pago procesados con éxito.");
@@ -85,113 +87,150 @@ export default function App() {
     };
 
     return (
-        <main className="app-container">
-            <div className="app-content">
+        <div className="app-container">
 
-                <header className="app-header">
-                    <div className="header-title">
-                        <h1>Registro de Auditorías</h1>
-                        <p>Plataforma de Auditorías de Ciberseguridad</p>
-                    </div>
+            <header className="app-header">
 
-                    <div className="wallet-container">
-                        {account ? (
-                            <>
-                                <span className="wallet-address">
-                                    Conectado: {account.substring(0,6)}...{account.substring(38)}
-                                </span>
-                                <button
-                                    className="button button-secondary"
-                                    onClick={disconnectWallet}
-                                >
-                                    Desconectar
-                                </button>
-                            </>
-                        ) : (
+                <div className="brand">
+                    <h1 className="main-title">
+                        DApp
+                    </h1>
+
+                    <p className="subtitle">
+                        Registro de Auditorías de Ciberseguridad
+                    </p>
+                </div>
+
+                <div className="wallet-area">
+
+                    {account ? (
+                        <>
+                            <span className="wallet-status">
+                                Conectado: {account.substring(0, 6)}...
+                                {account.substring(38)}
+                            </span>
+
                             <button
-                                className="button button-primary"
-                                onClick={connectWallet}
+                                className="btn btn-secondary"
+                                onClick={disconnectWallet}
                             >
-                                Conectar Wallet (MetaMask)
+                                Desconectar
                             </button>
-                        )}
-                    </div>
-                </header>
+                        </>
+                    ) : (
+                        <button
+                            className="btn btn-primary"
+                            onClick={connectWallet}
+                        >
+                            Conectar Wallet (MetaMask)
+                        </button>
+                    )}
 
-                {isReadOnly && (
-                    <div className="readonly-alert">
-                        <strong>Modo de Solo Lectura</strong>
-                        <p>
-                            Estás viendo el registro público de auditorías.
-                            Conecta tu wallet para solicitar nuevas auditorías o registrar reportes.
-                        </p>
-                    </div>
-                )}
+                </div>
+
+            </header>
+
+            {isReadOnly && (
+                <div className="readonly-notice">
+
+                    <strong>
+                        Modo de solo lectura
+                    </strong>
+
+                    <p>
+                        Estás viendo el registro público de auditorías.
+                        Conecta tu wallet para solicitar nuevas auditorías.
+                    </p>
+
+                </div>
+            )}
+
+            <main className="dashboard">
 
                 <section className="content-card">
-                    <h2>Sistemas Auditados</h2>
+
+                    <h2>
+                        Sistemas Auditados
+                    </h2>
+
                     <p className="section-description">
-                        Registro público e inmutable almacenado en Blockchain.
+                        Registro inmutable de auditorías almacenadas en Blockchain.
                     </p>
 
                     {reports.length > 0 ? (
-                        <div className="table-container">
-                            <table className="reports-table">
-                                <thead>
-                                    <tr>
-                                        <th>Sistema</th>
-                                        <th>Hash del Reporte</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {reports.map((rep, index) => (
-                                        <tr key={index}>
-                                            <td>{rep[0]}</td>
-                                            <td className="hash-cell">{rep[1]}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+
+                        <div className="reports-list">
+
+                            {reports.map((rep, index) => (
+
+                                <div className="report-item" key={index}>
+
+                                    <strong>
+                                        {rep[0]}
+                                    </strong>
+
+                                    <span>
+                                        Hash del reporte: {rep[1]}
+                                    </span>
+
+                                </div>
+
+                            ))}
+
                         </div>
+
                     ) : (
-                        <div className="empty-message">
-                            No hay reportes registrados para mostrar.
-                        </div>
+
+                        <p className="empty-message">
+                            No hay reportes registrados todavía.
+                        </p>
+
                     )}
+
                 </section>
 
                 <section className="content-card">
-                    <h2>Solicitar Auditoría Prioritaria</h2>
+
+                    <h2>
+                        Solicitar Auditoría Prioritaria
+                    </h2>
+
                     <p className="section-description">
-                        Solicita una auditoría prioritaria para el sistema seleccionado.
-                        La operación requiere conectar una wallet y confirmar el pago.
+                        Solicita una auditoría prioritaria mediante un pago en ETH.
                     </p>
 
-                    <div className="system-selection">
-                        <span>Sistema seleccionado</span>
-                        <strong>Servidor Web GNS3</strong>
+                    <div className="payment-area">
+
+                        <div>
+
+                            <span className="payment-label">
+                                Costo de solicitud
+                            </span>
+
+                            <strong className="payment-amount">
+                                0.01 ETH
+                            </strong>
+
+                        </div>
+
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => requestAudit("Servidor Web GNS3")}
+                            disabled={isReadOnly}
+                        >
+                            Pagar y solicitar auditoría
+                        </button>
+
                     </div>
 
-                    <button
-                        className="button button-primary audit-button"
-                        onClick={() => requestAudit("Servidor Web GNS3")}
-                        disabled={isReadOnly}
-                    >
-                        Pagar 0.01 ETH y Solicitar
-                    </button>
-
-                    {isReadOnly && (
-                        <p className="disabled-message">
-                            Conecta tu wallet para habilitar esta opción.
-                        </p>
-                    )}
                 </section>
 
-                <footer className="app-footer">
-                    Registro de Auditorías de Ciberseguridad | DApp Blockchain
-                </footer>
+            </main>
 
-            </div>
-        </main>
+            <footer className="app-footer">
+                Plataforma descentralizada de registro de auditorías
+            </footer>
+
+        </div>
     );
 }

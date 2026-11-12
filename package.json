@@ -12,6 +12,10 @@
   "type": "module",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.5",
+    "@typechain/ethers-v6": "^0.5.1",
     "hardhat": "^3.4.5"
+  },
+  "dependencies": {
+    "ethers": "^6.17.0"
   }
 }
