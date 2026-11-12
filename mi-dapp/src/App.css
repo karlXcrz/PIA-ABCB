@@ -1,0 +1,256 @@
+.app-container {
+    min-height: 100vh;
+    background-color: #f3f6fb;
+    font-family: Arial, sans-serif;
+    color: #263445;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.app-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Encabezado */
+.app-header {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    border: 1px solid #dce4ef;
+    border-top: 5px solid #2864a8;
+}
+
+.header-title h1 {
+    color: #24558b;
+    font-size: 25px;
+    margin: 0 0 8px;
+}
+
+.header-title p {
+    color: #68788b;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Wallet */
+.wallet-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.wallet-address {
+    background-color: #e8f2ff;
+    color: #24558b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* Botones */
+.button {
+    border: none;
+    padding: 12px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.button-primary {
+    background-color: #2864a8;
+    color: #ffffff;
+}
+
+.button-primary:hover:not(:disabled) {
+    background-color: #1e508b;
+}
+
+.button-secondary {
+    background-color: #e7ebf0;
+    color: #35465a;
+}
+
+.button-secondary:hover {
+    background-color: #d6dee8;
+}
+
+.button:disabled {
+    background-color: #aeb9c6;
+    color: #ffffff;
+    cursor: not-allowed;
+}
+
+/* Aviso de solo lectura */
+.readonly-alert {
+    background-color: #fff4e5;
+    border: 1px solid #f0d5a9;
+    border-left: 5px solid #e5a13b;
+    color: #79551f;
+    padding: 16px 20px;
+    margin-top: 20px;
+    border-radius: 7px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.readonly-alert p {
+    margin: 6px 0 0;
+}
+
+/* Tarjetas de contenido */
+.content-card {
+    background-color: #ffffff;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 10px;
+    border: 1px solid #dce4ef;
+}
+
+.content-card h2 {
+    color: #24558b;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: #68788b;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Tabla de reportes */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.reports-table th {
+    background-color: #edf3fa;
+    color: #345477;
+    text-align: left;
+    padding: 13px;
+}
+
+.reports-table td {
+    padding: 14px 13px;
+    border-bottom: 1px solid #e5eaf0;
+}
+
+.reports-table tbody tr:hover {
+    background-color: #f7f9fc;
+}
+
+.hash-cell {
+    color: #60758c;
+    word-break: break-all;
+}
+
+/* Mensaje cuando no hay reportes */
+.empty-message {
+    background-color: #f7f9fc;
+    padding: 25px;
+    text-align: center;
+    border-radius: 7px;
+    color: #8794a3;
+    font-size: 14px;
+}
+
+/* Sistema seleccionado */
+.system-selection {
+    background-color: #f3f6fb;
+    padding: 16px;
+    border-radius: 7px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.system-selection span {
+    color: #68788b;
+    font-size: 13px;
+}
+
+.system-selection strong {
+    color: #35465a;
+    font-size: 15px;
+}
+
+.audit-button {
+    margin-top: 2px;
+}
+
+.disabled-message {
+    color: #8794a3;
+    font-size: 12px;
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+/* Pie de página */
+.app-footer {
+    text-align: center;
+    color: #9aa6b3;
+    font-size: 12px;
+    padding: 25px 0 10px;
+}
+
+/* Adaptación a celulares */
+@media (max-width: 600px) {
+    .app-container {
+        padding: 15px 12px;
+    }
+
+    .app-header {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-title h1 {
+        font-size: 21px;
+    }
+
+    .wallet-container {
+        width: 100%;
+    }
+
+    .wallet-address {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .content-card {
+        padding: 18px;
+    }
+
+    .reports-table {
+        font-size: 12px;
+    }
+
+    .reports-table th,
+    .reports-table td {
+        padding: 10px 8px;
+    }
+
+    .button {
+        font-size: 13px;
+    }
+}
