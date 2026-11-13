@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import AuditRegistryABI from './AuditRegistryABI.json'; // El ABI del contrato compilado
 import './App.css';
 
-const contractAddress = "0xC469e7aE4aD962c30c7111dc580B4adbc7E914DD";
+const contractAddress = "TU_DIRECCION_DEL_CONTRATO";
 
 export default function App() {
     const [account, setAccount] = useState(null);
